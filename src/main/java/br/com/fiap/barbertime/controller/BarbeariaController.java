@@ -54,7 +54,7 @@ public class BarbeariaController {
 
     }
 
-
+    //delete
     @DeleteMapping("/{id}")
     public ResponseEntity<Barbearia> excluirBarbearia(@PathVariable Long id) {
         for (Barbearia barbearia : barbeariaRepository) {
