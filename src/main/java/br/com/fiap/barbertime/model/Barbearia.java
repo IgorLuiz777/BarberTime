@@ -1,26 +1,32 @@
 package br.com.fiap.barbertime.model;
 
-public record Barbearia(Long id, String nome, Endereco endereco, String email, String telefone, String cnpj, Servicos servicos, Funcionario funcionario) {
+import org.hibernate.validator.constraints.br.CNPJ;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+
+@Data
+@Entity
+public class Barbearia {
      
-    private static long contador = 1;
-
-    public Barbearia(Long id, String nome, Endereco endereco, String email, String telefone, String cnpj, Servicos servicos, Funcionario funcionario) {
-        this.id = contador++;
-        this.nome = nome;
-        this.endereco = endereco;
-        this.email = email;
-        this.telefone = telefone;
-        this.cnpj = cnpj;
-        this.servicos = servicos;
-        this.funcionario = funcionario;
-    }
-
-    //public void atualizarBarbearia() {
-
-    //    if (this.nome() != null) {
-    //        this.nome =
-    //    }
-
-    //}
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+    @NotBlank
+    String nome;
+    //Endereco endereco;
+    @Email
+    String email;
+    @Size(min= 11, max = 11)
+    String telefone;
+    @NotBlank
+    String cnpj;
+    //Servicos servicos;
+    //Funcionario funcionario;
 
 }

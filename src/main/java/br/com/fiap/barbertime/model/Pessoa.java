@@ -1,7 +1,7 @@
-package br.com.fiap.barbertime.model;
+// package br.com.fiap.barbertime.model;
 
-import java.util.Date;
+// import java.util.Date;
 
-public record Pessoa(Long id, String nome, String telefone, String email, Endereco endereco, Date dataNascimento) {
+// public record Pessoa(Long id, String nome, String telefone, String email, Endereco endereco, Date dataNascimento) {
 
-}
+// }
