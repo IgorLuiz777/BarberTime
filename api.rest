@@ -1,0 +1,10 @@
+
+POST http://localhost:8080/barbearia
+Content-Type: application/json
+
+{
+    "nome": "Renato Cariani",
+    "email": "crackiani@gmail.com",
+    "telefone": "11978057895",
+    "cnpj": "30133297000124"
+}

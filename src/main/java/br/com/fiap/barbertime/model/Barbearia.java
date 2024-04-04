@@ -24,7 +24,7 @@ public class Barbearia {
     String email;
     @Size(min= 11, max = 11)
     String telefone;
-    @NotBlank
+    @NotBlank @Size(min=14, max=14)
     String cnpj;
     //Servicos servicos;
     //Funcionario funcionario;
