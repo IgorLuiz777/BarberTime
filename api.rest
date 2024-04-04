@@ -8,3 +8,29 @@ Content-Type: application/json
     "telefone": "11978057895",
     "cnpj": "30133297000124"
 }
+
+###
+GET http://localhost:8080/barbearia
+
+###
+
+
+GET http://localhost:8080/barbearia/1
+
+###
+
+DELETE http://localhost:8080/barbearia/1
+
+###
+
+PUT http://localhost:8080/barbearia/1
+Content-Type: application/json
+
+{
+    "nome": "Renato Cariani2",
+    "email": "crackiani@gmail.com",
+    "telefone": "11978057895",
+    "cnpj": "30133297000124"
+}
+
+###

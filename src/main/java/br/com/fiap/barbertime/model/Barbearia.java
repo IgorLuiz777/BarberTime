@@ -1,6 +1,5 @@
 package br.com.fiap.barbertime.model;
 
-import org.hibernate.validator.constraints.br.CNPJ;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,6 +13,8 @@ import lombok.Data;
 @Data
 @Entity
 public class Barbearia {
+
+    // TODO: CONSEGUIR DA UM PUT SEM PASSAR OS ATRIBULOS NOTNULL
      
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
