@@ -18,15 +18,21 @@ public class Barbearia {
      
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     @NotBlank
     String nome;
+
     //Endereco endereco;
+
     @Email
     String email;
+
     @Size(min= 11, max = 11)
     String telefone;
+
     @NotBlank @Size(min=14, max=14)
     String cnpj;
+    
     //Servicos servicos;
     //Funcionario funcionario;
 
