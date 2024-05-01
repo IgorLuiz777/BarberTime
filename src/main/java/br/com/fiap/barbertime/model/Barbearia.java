@@ -8,10 +8,16 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Barbearia {
 
     // TODO: CONSEGUIR DA UM PUT SEM PASSAR OS ATRIBULOS NOTNULL
@@ -32,7 +38,7 @@ public class Barbearia {
 
     @NotBlank @Size(min=14, max=14)
     String cnpj;
-    
+
     //Servicos servicos;
     //Funcionario funcionario;
 
