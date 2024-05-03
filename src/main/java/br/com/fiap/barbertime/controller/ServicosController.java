@@ -22,62 +22,57 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import br.com.fiap.barbertime.model.Barbearia;
-import br.com.fiap.barbertime.repository.BarbeariaRepository;
-import lombok.extern.slf4j.Slf4j;
+import br.com.fiap.barbertime.model.Servicos;
+import br.com.fiap.barbertime.repository.ServicosRepository;
 
 @RestController
-@RequestMapping("/barbearia")
-@Slf4j
-public class BarbeariaController {
-
+@RequestMapping("/servicos")
+public class ServicosController {
+    
     @Autowired
-    BarbeariaRepository barbeariaRepository;
+    ServicosRepository servicosRepository;
 
     @GetMapping
-    public Page<Barbearia> index(@PageableDefault(sort = "nome", direction = Direction.ASC) Pageable pageable) {
-        return barbeariaRepository.findAll(pageable);
+    public Page<Servicos> index(@PageableDefault(sort = "nome", direction = Direction.ASC) Pageable pageable) {
+        return servicosRepository.findAll(pageable);
     }
 
     @GetMapping("/nome")
-    public Page<Barbearia> findByNome(
+    public Page<Servicos> findByNome(
             @RequestParam(required = false) String nome, Pageable pageable) {
-        return barbeariaRepository.findByNome(nome, pageable);
+        return servicosRepository.findByNome(nome, pageable);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Barbearia> findById(@PathVariable Long id) {
-        log.info("buscando barbearia com o {}", id);
-        return barbeariaRepository.findById(id)
+    public ResponseEntity<Servicos> findById(@PathVariable Long id) {
+        return servicosRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+     @PostMapping
     @ResponseStatus(CREATED)
-    public Barbearia cadastrarBarbearia(@RequestBody Barbearia barbearia) {
-        log.info("Cadastrando barbearia com o {}", barbearia);
-        return barbeariaRepository.save(barbearia);
+    public Servicos cadastrarServico(@RequestBody Servicos servicos) {
+        return servicosRepository.save(servicos);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(NO_CONTENT)
-    public void excluirBarbearia(@PathVariable Long id) {
-        log.info("Deletando barbearia com o id {}", id);
-        verificarBarbearia(id);
-        barbeariaRepository.deleteById(id);
+    public void excluirServico(@PathVariable Long id) {
+        verificarServico(id);
+        servicosRepository.deleteById(id);
     }
 
     @PutMapping("/{id}")
-    public Barbearia editarBarbearia(@PathVariable Long id, @RequestBody Barbearia barbearia) {
-        log.info("Atualizando a barbearia com o id {} para a {}", id, barbearia);
-        verificarBarbearia(id);
-        barbearia.setId(id);
-        return barbeariaRepository.save(barbearia);
+    public Servicos editarServico(@PathVariable Long id, @RequestBody Servicos servicos) {
+        verificarServico(id);
+        servicos.setId(id);
+        return servicosRepository.save(servicos);
     }
 
-    private void verificarBarbearia(Long id) {
-        barbeariaRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Não existe uma barbearia com o ID informado!"));
+    private void verificarServico(Long id) {
+        servicosRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Não existe um servico com o ID informado!"));
     }
+
 }
