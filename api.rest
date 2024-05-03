@@ -10,10 +10,21 @@ Content-Type: application/json
 }
 
 ###
+
+POST http://localhost:8080/servicos
+{
+	"nome": "Corte",
+	"valor": 50,
+	"barbearia": {
+		"id": 1
+	}
+}
+
+###
 GET http://localhost:8080/barbearia
 
 ###
-GET http://localhost:8080/barbearia/nome?nome=Renato Cariani
+GET http://localhost:8080/barbearia/nome?nome=Cariani Barber
 
 ###
 GET http://localhost:8080/barbearia/1

@@ -4,6 +4,8 @@ package br.com.fiap.barbertime.model;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,5 +35,6 @@ public class Servicos {
     BigDecimal valor;
 
     @ManyToOne
+    @JsonBackReference
     Barbearia barbearia;
 }
