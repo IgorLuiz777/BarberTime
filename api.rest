@@ -26,7 +26,7 @@ Content-Type: application/json
 GET http://localhost:8080/barbearia
 
 ###
-GET http://localhost:8080/barbearia/nome?nome=Cariani Barber
+GET http://localhost:8080/barbearia/nome?nome=Cariani+Barber
 
 ###
 GET http://localhost:8080/barbearia/1
