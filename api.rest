@@ -12,6 +12,8 @@ Content-Type: application/json
 ###
 
 POST http://localhost:8080/servicos
+Content-Type: application/json
+
 {
 	"nome": "Corte",
 	"valor": 50,

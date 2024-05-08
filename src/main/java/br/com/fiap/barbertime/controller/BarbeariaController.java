@@ -24,11 +24,13 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.barbertime.model.Barbearia;
 import br.com.fiap.barbertime.repository.BarbeariaRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/barbearia")
 @Slf4j
+@Tag(name = "barbearia")
 public class BarbeariaController {
 
     @Autowired
