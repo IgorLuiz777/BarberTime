@@ -40,6 +40,16 @@ public class BarbeariaController {
         return barbeariaRepository.findAll(pageable);
     }
 
+    @Operation(
+        summary = "Burcar uma barbearias pelo nome",
+        description = "Retorna uma barbearia com base no nome fornecido"
+    )
+    @GetMapping("/nome")
+    public Page<Barbearia> findByNome(
+            @RequestParam(required = false) String nome, Pageable pageable) {
+        return barbeariaRepository.findByNome(nome, pageable);
+    }
+
     @GetMapping("/{id}")
     @Operation(
         summary = "Buscar uma barbearia por ID",
