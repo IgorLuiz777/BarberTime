@@ -1,8 +1,13 @@
 package br.com.fiap.barbertime.model;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
 
+import org.springframework.hateoas.EntityModel;
+
+import br.com.fiap.barbertime.controller.BarbeariaController;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,6 +19,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -21,7 +27,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Barbearia {
+@EqualsAndHashCode(callSuper = false)
+public class Barbearia extends EntityModel<Barbearia>{
 
     // TODO: CONSEGUIR DA UM PUT SEM PASSAR OS ATRIBULOS NOTNULL
      
@@ -46,5 +53,16 @@ public class Barbearia {
     List<Servicos> servicos;
 
     //Funcionario funcionario;
+
+     public EntityModel<Barbearia> toEntityModel() {
+        return EntityModel.of(
+            this, 
+            linkTo(methodOn(BarbeariaController.class).buscarPorId(id)).withSelfRel(),
+            linkTo(BarbeariaController.class).slash(id).withRel("DELETE"),
+            linkTo(methodOn(BarbeariaController.class).listarBarbearias(null)).withRel("GET"),
+            linkTo(methodOn(BarbeariaController.class).cadastrarBarbearia(null)).withRel("POST"),
+            linkTo(methodOn(BarbeariaController.class).atualizarBarbearia(id, null)).withRel("PUT")
+            );
+    }
 
 }
