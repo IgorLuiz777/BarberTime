@@ -1,11 +1,15 @@
 package br.com.fiap.barbertime.model;
 
-
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.math.BigDecimal;
 
+import org.springframework.hateoas.EntityModel;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import br.com.fiap.barbertime.controller.ServicosController;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,6 +20,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -23,7 +28,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Servicos {
+@EqualsAndHashCode(callSuper = false)
+public class Servicos extends EntityModel<Barbearia> {
      
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -37,4 +43,15 @@ public class Servicos {
     @ManyToOne
     @JsonBackReference
     Barbearia barbearia;
+
+    public EntityModel<Servicos> toEntityModel() {
+        return EntityModel.of(
+            this, 
+                linkTo(methodOn(ServicosController.class).buscarPorId(id)).withSelfRel(),
+                linkTo(ServicosController.class).slash(id).withRel("DELETE"),
+                linkTo(methodOn(ServicosController.class).listarServicos(null)).withRel("GET"),
+                linkTo(methodOn(ServicosController.class).cadastrarServico(null)).withRel("POST"),
+                linkTo(methodOn(ServicosController.class).atualizarServico(id, null)).withRel("PUT")
+            );
+    }
 }

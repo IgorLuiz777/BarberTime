@@ -54,14 +54,14 @@ public class Barbearia extends EntityModel<Barbearia>{
 
     //Funcionario funcionario;
 
-     public EntityModel<Barbearia> toEntityModel() {
+    public EntityModel<Barbearia> toEntityModel() {
         return EntityModel.of(
             this, 
-            linkTo(methodOn(BarbeariaController.class).buscarPorId(id)).withSelfRel(),
-            linkTo(BarbeariaController.class).slash(id).withRel("DELETE"),
-            linkTo(methodOn(BarbeariaController.class).listarBarbearias(null)).withRel("GET"),
-            linkTo(methodOn(BarbeariaController.class).cadastrarBarbearia(null)).withRel("POST"),
-            linkTo(methodOn(BarbeariaController.class).atualizarBarbearia(id, null)).withRel("PUT")
+                linkTo(methodOn(BarbeariaController.class).buscarPorId(id)).withSelfRel(),
+                linkTo(BarbeariaController.class).slash(id).withRel("DELETE"),
+                linkTo(methodOn(BarbeariaController.class).listarBarbearias(null)).withRel("GET"),
+                linkTo(methodOn(BarbeariaController.class).cadastrarBarbearia(null)).withRel("POST"),
+                linkTo(methodOn(BarbeariaController.class).atualizarBarbearia(id, null)).withRel("PUT")
             );
     }
 
