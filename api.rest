@@ -6,7 +6,11 @@ Content-Type: application/json
     "nome": "Cariani Barber",
     "email": "crackiani@gmail.com",
     "telefone": "11978057895",
-    "cnpj": "05133159000106"
+    "cnpj": "05133159000106",
+    "servicos": {
+        "nome": "Corte",
+	    "valor": 50
+    }
 }
 
 ###

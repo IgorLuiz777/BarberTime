@@ -13,4 +13,6 @@ public interface ServicosRepository extends JpaRepository<Servicos, Long>{
     @Query("SELECT s FROM Servicos s WHERE s.nome = :nome")
     Page<Servicos> findByNome(@Param("nome") String nome, Pageable pageable);
 
+    void deleteByBarbeariaId(Long barbeariaId);
+
 }
