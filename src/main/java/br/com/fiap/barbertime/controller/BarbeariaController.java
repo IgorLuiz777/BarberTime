@@ -26,11 +26,13 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.barbertime.model.Barbearia;
 import br.com.fiap.barbertime.repository.BarbeariaRepository;
+import br.com.fiap.barbertime.repository.ServicosRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -41,6 +43,9 @@ public class BarbeariaController {
 
     @Autowired
     private BarbeariaRepository barbeariaRepository;
+
+    @Autowired
+    private ServicosRepository servicosRepository;
 
     @Autowired
     PagedResourcesAssembler<Barbearia> pagedResourcesAssembler;
@@ -135,6 +140,7 @@ public class BarbeariaController {
         @ApiResponse(responseCode = "204", description = "Barbearia excluída com sucesso"),
         @ApiResponse(responseCode = "404", description = "Barbearia não encontrada", content = @io.swagger.v3.oas.annotations.media.Content)
     })
+    @Transactional
     public void excluirBarbearia(
             @Parameter(description = "ID da barbearia a ser excluída", example = "1") @PathVariable Long id) {
         log.info("Excluindo a barbearia com o ID {}", id);
@@ -143,6 +149,10 @@ public class BarbeariaController {
             throw new ResponseStatusException(NOT_FOUND, "Barbearia não encontrada com o ID: " + id);
         }
 
+        // Excluir os serviços associados à barbearia
+        servicosRepository.deleteByBarbeariaId(id);
+
+        // Agora você pode excluir a barbearia
         barbeariaRepository.deleteById(id);
     }
 
