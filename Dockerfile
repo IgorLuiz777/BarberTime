@@ -1,8 +1,16 @@
-FROM openjdk:17-slim-buster AS build
-RUN apt-get install -f && apt-get install maven -y
+FROM ubuntu:latest AS build
+
+RUN apt-get update
+RUN apt-get install openjdk-17-jdk -y
 COPY . .
-RUN mvn clean install
-FROM openjdk:17-slim
+
+RUN apt-get install maven -y
+RUN mvn clean install 
+
+FROM openjdk:17-jdk-slim
+
 EXPOSE 8080
-COPY --from=build target/barbertime-0.0.1-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+COPY --from=build target\barbertime-0.0.1-SNAPSHOT.jar app.jar
+
+ENTRYPOINT [ "java", "-jar", "app.jar" ]
