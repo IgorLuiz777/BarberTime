@@ -2,10 +2,9 @@
 FROM openjdk:17-slim-buster AS build
 
 # Update package lists efficiently (optional for frequently updated images)
-RUN apt-get update
+RUN apt-get update --no-cache
 
 # Install Maven for building the Java application
-RUN apt-get update --no-cache
 RUN apt-get install maven -y
 
 # Copy project source code to the build context
