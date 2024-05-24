@@ -148,11 +148,7 @@ public class BarbeariaController {
         if (!barbeariaRepository.existsById(id)) {
             throw new ResponseStatusException(NOT_FOUND, "Barbearia não encontrada com o ID: " + id);
         }
-
-        // Excluir os serviços associados à barbearia
         servicosRepository.deleteByBarbeariaId(id);
-
-        // Agora você pode excluir a barbearia
         barbeariaRepository.deleteById(id);
     }
 
