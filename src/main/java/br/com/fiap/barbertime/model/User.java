@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,12 +34,12 @@ public class User {
     @Column(name = "id_user")
     private Long id;
 
-    @NotBlank
-    @Column(unique = true)
-    private String nomeUsuario;
-
+    @Email(message = "Email inválido!")
     @Column(unique = true)
     private String email;
+
+    @NotBlank
+    private String nome;
  
     @NotBlank
     private String senha;

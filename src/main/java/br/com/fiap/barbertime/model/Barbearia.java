@@ -8,29 +8,35 @@ import java.util.List;
 import org.springframework.hateoas.EntityModel;
 
 import br.com.fiap.barbertime.controller.BarbeariaController;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
 @Entity
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@Getter
+@Setter
+@ToString
 @EqualsAndHashCode(callSuper = false)
+@Table(name = "barber_time_barbearias")
 public class Barbearia extends EntityModel<Barbearia>{
-
-    // TODO: CONSEGUIR DA UM PUT SEM PASSAR OS ATRIBULOS NOTNULL
      
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -40,7 +46,8 @@ public class Barbearia extends EntityModel<Barbearia>{
 
     //Endereco endereco;
 
-    @Email
+    @Email(message = "Email inválido!")
+    @Column(unique = true)
     String email;
 
     @Size(min= 11, max = 11)
@@ -51,6 +58,9 @@ public class Barbearia extends EntityModel<Barbearia>{
     
     @OneToMany(mappedBy = "barbearia")
     List<Servicos> servicos;
+
+    @ManyToMany
+    private List<Role> roles;
 
     //Funcionario funcionario;
 
