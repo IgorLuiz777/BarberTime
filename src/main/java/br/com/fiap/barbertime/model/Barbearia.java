@@ -4,15 +4,21 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.hateoas.EntityModel;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import br.com.fiap.barbertime.controller.BarbeariaController;
+import br.com.fiap.barbertime.model.dto.LoginRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -39,30 +45,39 @@ import lombok.ToString;
 public class Barbearia extends EntityModel<Barbearia>{
      
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    @Column(name = "barbearia_id")
+    private Long id;
 
     @NotBlank
-    String nome;
-
-    //Endereco endereco;
+    private String nome;
 
     @Email(message = "Email inválido!")
     @Column(unique = true)
-    String email;
+    private String email;
+
+    @NotBlank
+    private String senha;
 
     @Size(min= 11, max = 11)
-    String telefone;
+    private String telefone;
 
     @NotBlank @Size(min=14, max=14)
-    String cnpj;
+    private String cnpj;
     
     @OneToMany(mappedBy = "barbearia")
-    List<Servicos> servicos;
+    private List<Servicos> servicos;
 
-    @ManyToMany
-    private List<Role> roles;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "barbearia_roles",
+        joinColumns = @JoinColumn(name = "barbearia_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles;
 
-    //Funcionario funcionario;
+    //Endereco endereco
+
+    //Funcionarios funcionarios
 
     public EntityModel<Barbearia> toEntityModel() {
         return EntityModel.of(
@@ -73,6 +88,10 @@ public class Barbearia extends EntityModel<Barbearia>{
                 linkTo(methodOn(BarbeariaController.class).cadastrarBarbearia(null)).withRel("POST"),
                 linkTo(methodOn(BarbeariaController.class).atualizarBarbearia(id, null)).withRel("PUT")
             );
+    }
+
+    public boolean isLoginCorrect(LoginRequest loginRequest, PasswordEncoder passwordEncoder) {
+        return passwordEncoder.matches(loginRequest.senha(), this.senha);
     }
 
 }
