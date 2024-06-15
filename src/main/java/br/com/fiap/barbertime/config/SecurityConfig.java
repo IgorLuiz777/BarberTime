@@ -42,7 +42,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/barbearia/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/barbearia").permitAll()
                 .requestMatchers(HttpMethod.GET, "/barbearia").permitAll()
+                .requestMatchers(HttpMethod.GET, "/barbearia/{id}").permitAll()
                 .requestMatchers(HttpMethod.GET, "/docs").permitAll()
                 .anyRequest().authenticated())
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))

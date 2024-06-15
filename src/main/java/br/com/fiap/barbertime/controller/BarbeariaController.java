@@ -1,6 +1,5 @@
 package br.com.fiap.barbertime.controller;
 
-import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.barbertime.model.Barbearia;
+import br.com.fiap.barbertime.model.dto.BarbeariaResponse;
 import br.com.fiap.barbertime.repository.BarbeariaRepository;
 import br.com.fiap.barbertime.repository.ServicosRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,18 +48,23 @@ public class BarbeariaController {
     private ServicosRepository servicosRepository;
 
     @Autowired
-    PagedResourcesAssembler<Barbearia> pagedResourcesAssembler;
+    private PagedResourcesAssembler<Barbearia> barbeariaPagedResourcesAssembler;
+
+    @Autowired
+    private PagedResourcesAssembler<BarbeariaResponse> barbeariaResponsePagedResourcesAssembler;
 
     @GetMapping
     @Operation(
         summary = "Listar todas as barbearias",
         description = "Retorna uma lista paginada de todas as barbearias, ordenadas pelo nome em ordem alfabética"
     )
-    public PagedModel<EntityModel<Barbearia>> listarBarbearias(
-            @Parameter(description = "Página solicitada (começando do 0)", example = "0") @PageableDefault(sort = "nome", direction = Direction.ASC) Pageable pageable) {
+    public PagedModel<EntityModel<BarbeariaResponse>> listarBarbearias(
+            @Parameter(description = "Página solicitada (começando do 0)", example = "0") 
+            @PageableDefault(sort = "nome", direction = Direction.ASC) Pageable pageable) {
     
         Page<Barbearia> page = barbeariaRepository.findAll(pageable);
-        return pagedResourcesAssembler.toModel(page);
+        Page<BarbeariaResponse> dtoPage = page.map(this::convertToDto);
+        return barbeariaResponsePagedResourcesAssembler.toModel(dtoPage);
     }
 
     @GetMapping("/nome")
@@ -81,18 +86,18 @@ public class BarbeariaController {
         @ApiResponse(responseCode = "200", description = "Barbearia encontrada"),
         @ApiResponse(responseCode = "404", description = "Barbearia não encontrada", content = @io.swagger.v3.oas.annotations.media.Content)
     })
-    public EntityModel<Barbearia> buscarPorId(
+    public EntityModel<BarbeariaResponse> buscarPorId(
             @Parameter(description = "ID da barbearia a ser buscada", example = "1") @PathVariable Long id) {
         log.info("Buscando barbearia com o ID {}", id);
 
         var barbearia = barbeariaRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Barbearia não encontrada"));
 
-        return barbearia.toEntityModel();
+        return EntityModel.of(convertToDto(barbearia));
     }
 
     @PostMapping
-    @ResponseStatus(CREATED)
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(
         summary = "Cadastrar uma nova barbearia",
         description = "Cria uma nova barbearia com os dados fornecidos no corpo da requisição"
@@ -152,4 +157,14 @@ public class BarbeariaController {
         barbeariaRepository.deleteById(id);
     }
 
+    private BarbeariaResponse convertToDto(Barbearia barbearia) {
+        return new BarbeariaResponse(
+            barbearia.getId(),
+            barbearia.getEmail(),
+            barbearia.getNome(),
+            barbearia.getTelefone(),
+            barbearia.getCnpj(),
+            barbearia.getServicos()
+        );
+    }
 }
