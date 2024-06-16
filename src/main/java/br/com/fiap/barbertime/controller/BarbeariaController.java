@@ -2,6 +2,8 @@ package br.com.fiap.barbertime.controller;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +13,8 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,8 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.barbertime.model.Barbearia;
+import br.com.fiap.barbertime.model.RoleName;
 import br.com.fiap.barbertime.model.dto.BarbeariaResponse;
 import br.com.fiap.barbertime.repository.BarbeariaRepository;
+import br.com.fiap.barbertime.repository.RoleRepository;
 import br.com.fiap.barbertime.repository.ServicosRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -52,6 +58,12 @@ public class BarbeariaController {
 
     @Autowired
     private PagedResourcesAssembler<BarbeariaResponse> barbeariaResponsePagedResourcesAssembler;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping
     @Operation(
@@ -110,6 +122,11 @@ public class BarbeariaController {
             @Parameter(description = "Dados da barbearia a ser cadastrada") @RequestBody Barbearia barbearia) {
         log.info("Cadastrando nova barbearia: {}", barbearia);
 
+        var barbeariaRole = roleRepository.findByName(RoleName.ROLE_BARBEARIA);
+
+        barbearia.setRoles(Set.of(barbeariaRole.get()));
+        barbearia.setSenha(bCryptPasswordEncoder.encode(barbearia.getSenha()));
+
         return barbeariaRepository.save(barbearia);
     }
 
@@ -124,15 +141,24 @@ public class BarbeariaController {
     })
     public Barbearia atualizarBarbearia(
             @Parameter(description = "ID da barbearia a ser atualizada", example = "1") @PathVariable Long id,
-            @Parameter(description = "Novos dados da barbearia") @RequestBody Barbearia barbearia) {
+            @Parameter(description = "Novos dados da barbearia") @RequestBody Barbearia barbearia, JwtAuthenticationToken jwtToken) {
         log.info("Atualizando a barbearia com o ID {} para: {}", id, barbearia);
         
         if (!barbeariaRepository.existsById(id)) {
             throw new ResponseStatusException(NOT_FOUND, "Barbearia não encontrada: ID " + id);
         }
 
-        barbearia.setId(id);
-        return barbeariaRepository.save(barbearia);
+        long userIdFromToken = Long.parseLong(jwtToken.getName());
+
+        if (!Long.valueOf(userIdFromToken).equals(id)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuário não autorizado para excluir esta barbearia");
+        } else {
+            var barbeariaRole = roleRepository.findByName(RoleName.ROLE_BARBEARIA);
+            barbearia.setRoles(Set.of(barbeariaRole.get()));
+            barbearia.setSenha(bCryptPasswordEncoder.encode(barbearia.getSenha()));
+            barbearia.setId(id);
+            return barbeariaRepository.save(barbearia);
+        }  
     }
 
     @DeleteMapping("/{id}")
@@ -143,19 +169,32 @@ public class BarbeariaController {
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Barbearia excluída com sucesso"),
-        @ApiResponse(responseCode = "404", description = "Barbearia não encontrada", content = @io.swagger.v3.oas.annotations.media.Content)
+        @ApiResponse(responseCode = "404", description = "Barbearia não encontrada", content = @io.swagger.v3.oas.annotations.media.Content),
+        @ApiResponse(responseCode = "403", description = "Usuário não autorizado para excluir esta barbearia", content = @io.swagger.v3.oas.annotations.media.Content)
     })
     @Transactional
     public void excluirBarbearia(
-            @Parameter(description = "ID da barbearia a ser excluída", example = "1") @PathVariable Long id) {
+            @Parameter(description = "ID da barbearia a ser excluída", example = "1") @PathVariable Long id, JwtAuthenticationToken jwtToken) {
         log.info("Excluindo a barbearia com o ID {}", id);
 
         if (!barbeariaRepository.existsById(id)) {
             throw new ResponseStatusException(NOT_FOUND, "Barbearia não encontrada com o ID: " + id);
         }
+
+        long userIdFromToken = Long.parseLong(jwtToken.getName());
+
+        if (!Long.valueOf(userIdFromToken).equals(id)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuário não autorizado para excluir esta barbearia");
+        }
+
         servicosRepository.deleteByBarbeariaId(id);
         barbeariaRepository.deleteById(id);
+        log.info("Barbearia com ID {} excluída com sucesso", id);
     }
+
+
+
+
 
     private BarbeariaResponse convertToDto(Barbearia barbearia) {
         return new BarbeariaResponse(

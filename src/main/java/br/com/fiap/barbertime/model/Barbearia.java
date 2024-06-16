@@ -86,7 +86,7 @@ public class Barbearia extends EntityModel<Barbearia>{
                 linkTo(BarbeariaController.class).slash(id).withRel("DELETE"),
                 linkTo(methodOn(BarbeariaController.class).listarBarbearias(null)).withRel("GET"),
                 linkTo(methodOn(BarbeariaController.class).cadastrarBarbearia(null)).withRel("POST"),
-                linkTo(methodOn(BarbeariaController.class).atualizarBarbearia(id, null)).withRel("PUT")
+                linkTo(methodOn(BarbeariaController.class).atualizarBarbearia(id, null, null)).withRel("PUT")
             );
     }
 
