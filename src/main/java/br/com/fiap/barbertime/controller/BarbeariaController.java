@@ -191,11 +191,6 @@ public class BarbeariaController {
         barbeariaRepository.deleteById(id);
         log.info("Barbearia com ID {} excluída com sucesso", id);
     }
-
-
-
-
-
     private BarbeariaResponse convertToDto(Barbearia barbearia) {
         return new BarbeariaResponse(
             barbearia.getId(),
