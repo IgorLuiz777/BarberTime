@@ -190,7 +190,26 @@ public class BarbeariaController {
         servicosRepository.deleteByBarbeariaId(id);
         barbeariaRepository.deleteById(id);
         log.info("Barbearia com ID {} excluída com sucesso", id);
+
     }
+
+
+    @GetMapping("/token")
+    @Operation(
+        summary = "Obter informações da barbearia do usuário logado",
+        description = "Retorna as informações da barbearia associada ao usuário logado, identificado pelo token JWT"
+    )
+    public EntityModel<BarbeariaResponse> obterMinhasInformacoes(JwtAuthenticationToken jwtToken) {
+        String userIdFromToken = jwtToken.getName();
+
+        Barbearia barbearia = barbeariaRepository.findById(Long.parseLong(userIdFromToken))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Barbearia não encontrada para o usuário"));
+
+        BarbeariaResponse barbeariaResponse = convertToDto(barbearia);
+
+        return EntityModel.of(barbeariaResponse);
+    }
+
     private BarbeariaResponse convertToDto(Barbearia barbearia) {
         return new BarbeariaResponse(
             barbearia.getId(),
